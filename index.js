@@ -1093,9 +1093,15 @@ Buffer.prototype.slice = function slice (start, end) {
 
   if (end < start) end = start
 
-  var newBuf = this.subarray(start, end)
-  // Return an augmented `Uint8Array` instance
-  newBuf.__proto__ = Buffer.prototype
+  var newBuf
+  var sliceLen = end - start
+  newBuf = new Buffer(sliceLen, undefined)
+  for (var i = 0; i < sliceLen; i++) {
+    newBuf[i] = this[i + start]
+  }
+
+  if (newBuf.length) newBuf.parent = this.parent || this
+
   return newBuf
 }
 
